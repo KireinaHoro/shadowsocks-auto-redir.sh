@@ -5,7 +5,8 @@ Once upon a time, I wrote a [blog post](https://typeblog.net/set-up-shadowsocks-
 
 And now I want to make the whole process automatic.
 
-__The following manual supports only distributions with systemd. ArchLinux is taken as default.__  
+Support for systemd distributions (Arch Linux here) as well as OpenRC distributions (Gentoo here) are present. Experimental IPv6 support is available for OpenRC.
+
 __This script requires ROOT permission and comes with ABSOLUTELY NO WARRANTY. Use it at your own risk.__
 
 Note for IPv6
