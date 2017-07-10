@@ -7,8 +7,9 @@ link() {
 }
 
 config() {
+    LOCAL_PORT=`jq -r ".local_port" /etc/shadowsocks-libev/redir.json`
     cp /etc/shadowsocks-libev/redir.json /etc/shadowsocks-libev/redir.v4.json
-    sed -e "s/127.0.0.1/::1/" /etc/shadowsocks-libev/redir.json | sed -e "s/1081/1082/" > /etc/shadowsocks-libev/redir.v6.json
+    sed -e "s/127.0.0.1/::1/" /etc/shadowsocks-libev/redir.json | sed -e "s/${LOCAL_PORT}/$((${LOCAL_PORT}+1))/" > /etc/shadowsocks-libev/redir.v6.json
 }
 
 unlink() {
