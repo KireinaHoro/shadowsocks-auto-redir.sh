@@ -8,6 +8,12 @@ And now I want to make the whole process automatic.
 __The following manual supports only distributions with systemd. ArchLinux is taken as default.__  
 __This script requires ROOT permission and comes with ABSOLUTELY NO WARRANTY. Use it at your own risk.__
 
+Note for IPv6
+---
+
+This tool currently only bypasses IANA reserved addresses (as defined in [here](https://en.wikipedia.org/wiki/Reserved_IP_addresses#IPv6))
+for IPv6, so the `bypass*` options in the configuration files won't take effect. They only apply to IPv4.
+
 Installation
 ---
 
@@ -17,8 +23,17 @@ Install the dependencies first
 
 ```bash
 # Execute as ROOT
+
+# for Arch Linux
 pacman -S jq shadowsocks-libev ipset
+
+# for Gentoo
+emerge -av app-misc/jq net-proxy/shadowsocks-libev net-firewall/ipset
 ```
+
+You may need to keyword `shadowsocks-libev`.
+
+**Make sure** that you've properly configured `ipset` (enable all algorithms) and `iptables` (enable NAT, the `REDIRECT` target in the Netfilter framework for **both IPv4 and IPv6**), otherwise things will most likely fail mysteriously. Consult Gentoo Wiki if you need assistance.
 
 Then clone this repo into any directory that the current user has access to. Take `$HOME` as an example.
 
@@ -47,7 +62,24 @@ Now, put your Shadowsocks configuration file into `/etc/shadowsocks/` (__Please 
 systemctl start shadowsocks-auto-redir@config
 ```
 
-After the unit get started properly, all the TCP traffic from your system will go through the Shadowsocks proxy.
+For OpenRC users, generate the corresponding configuration files with the following first:
+
+```bash
+# Execute as ROOT
+./install-openrc.sh config
+```
+
+Then start the services (and add them to `default` runlevel according to your need)
+
+```bash
+# Execute as ROOT
+/etc/init.d/shadowsocks-auto-redir.v4 start
+/etc/init.d/shadowsocks-auto-redir.v6 start
+rc-update add shadowsocks-auto-redir.v4 default
+rc-update add shadowsocks-auto-redir.v6 default
+```
+
+After the unit/services get(s) started properly, all the TCP traffic from your system will go through the Shadowsocks proxy.
 
 In addition, this script supports some exta fields (under `ss_redir_options`) in the configuration JSON file.
 
@@ -57,21 +89,13 @@ In addition, this script supports some exta fields (under `ss_redir_options`) in
       ...
     ],
     "bypass_preset": "chnroute",
-    "ota": true
   }
 ```
 
 `bypass_ips`: A list of extra IPs to which traffic should not go through Shadowsocks proxy (by default, the server IP and the internal IP addresses are excluded from the proxy)
 `bypass_preset`: Include a predefined set of IPs to which traffic should not go through Shadowsocks proxy (currently only `chnroute` available which excludes all Chinese Mainland IPs)
-`ota`: Enable One-Time Authentication or not.
 
 __NOTE: This script does nothing to resolve DNS poisoning. If your network is subject to DNS poisoning, an anti-poisoning DNS server should be used or set up.__
-
-For `OpenRC` users, remember to process your configuration files with the following:
-
-    sudo ./install-openrc.sh config
-
-You can explore the script to see what it does. After reading the script you'll know why I recommend using `1081` as the local port.
 
 Updating
 ---
@@ -88,9 +112,7 @@ sudo ./install-openrc.sh update # for openrc
 Uninstallation
 ---
 
-Stop all the relavent systemd services before uninstallation.
-
-Switch to the directory of this project
+Stop all the relavent systemd services before uninstallation.  Switch to the directory of this project.
 
 ```bash
 # Execute as ROOT
