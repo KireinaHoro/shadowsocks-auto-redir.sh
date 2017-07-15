@@ -1,5 +1,5 @@
 #!/sbin/openrc-run
-# Copyright KireinaHoro <i@jsteward.moe>
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 SS_CONFIG_BASENAME="/etc/shadowsocks-libev/redir.json"
