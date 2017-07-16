@@ -1,0 +1,14 @@
+{
+	"server":"198.51.100.1",
+	"server_port":"443",
+	"password":"yoursupersecretpasswordhere",
+	"local_address":"::1",
+	"local_port":"1082",
+	"method":"salsa20",
+	"fast_open":true,
+	"mode":"tcp_and_udp",
+	"ipv6_first":true,
+	"ss_redir_options": {
+		"bypass_preset": "chnroute"
+	}
+}
