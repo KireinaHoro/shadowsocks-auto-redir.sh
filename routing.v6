@@ -17,7 +17,6 @@ clear_rules() {
     do_iptables -t nat -D OUTPUT -p tcp -j SHADOWSOCKS
     do_iptables -t nat -F SHADOWSOCKS
     do_iptables -t nat -X SHADOWSOCKS
-    do_ipset destroy shadowsocks
 }
 
 apply_rules() {
